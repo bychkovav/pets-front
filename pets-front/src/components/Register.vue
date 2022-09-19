@@ -5,7 +5,7 @@ import InputText from 'primevue/inputtext';
 import Password from 'primevue/password';
 import Button from 'primevue/button';
 import axios from 'axios';
-import { email, required } from '@vuelidate/validators'
+import { email, required, sameAs  } from '@vuelidate/validators'
 import { useVuelidate } from '@vuelidate/core'
 
 export default {
@@ -13,12 +13,14 @@ export default {
     return {
         login: '',
         password: '',
+        confirm_password: '',
       errors: []
     }
   },
   validations: {
         login: { required, email },
-        password: { required }
+        password: { required },
+        confirm_password: { required, sameAsPassword: sameAs('password') }
   },
   setup: () => ({ v$: useVuelidate() }),
   components: {
@@ -37,7 +39,7 @@ export default {
         return;
       }
       axios
-      .post('http://127.0.0.1:8000/login', {email: this.login, password: this.password})
+      .post('http://127.0.0.1:8000/register', {email: this.login, password: this.password, confirm_password: this.confirm_password})
       .then(response => (alert(response)))
       .catch(function (error) {
         if(error.response.data){
@@ -53,7 +55,7 @@ export default {
 </script>
 
 <template>
-  <Fieldset legend="Login" class="lg:w-6 sm:w-full m-auto">
+  <Fieldset legend="Registration" class="lg:w-6 sm:w-full m-auto">
     <p v-if="errors.length" class="text-red-500">
     <b>Please correct the following error(s):</b>
     <ul>
@@ -71,6 +73,11 @@ export default {
         <label for="password" class="w-full">Password</label>
         <Password id="password" :style="{width: '100%'}" class="w-full" type="text" v-model="password" toggleMask />
         <div class="text-red-500" v-if="v$.password.$error">This field is required</div>
+      </div>
+      <div class="field">
+        <label for="confirm_password" class="w-full">Confirm password</label>
+        <Password id="confirm_password" :style="{width: '100%'}" class="w-full" type="text" v-model="confirm_password" toggleMask />
+        <div class="text-red-500" v-if="v$.confirm_password.$error">This field is required and should be the same as Password</div>
       </div>
       <div>
         <Button label="Submit" icon="pi pi-check" iconPos="right" type="submit" />
