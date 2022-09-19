@@ -1,21 +1,36 @@
 
   <script>
+  import { mapGetters } from 'vuex'
+
 export default {
     data() {
         return {
-            items: [
-                {
-					label:'Login',
-          url:'#/login',
-          right:true
-                },
-                {
-					label:'Register',
-          url:'#/register',
-          right:true
-                }
-              ]}
-                
+      }
+    },
+    computed: {
+      ...mapGetters({
+      current_user: 'user',
+      }),
+      items() {
+        var its = [];
+        if(!this.current_user) {
+           its.push({label:'Login',
+          url:'#/login'});
+          its.push({label:'Register',
+          url:'#/register'});
+        } else {
+          its.push({
+					label:'Quit',
+					icon:'pi pi-fw pi-power-off',
+          command: (event) => {
+               this.$store.commit('setUser', null);
+              this.$store.commit('setToken', null);
+        }
+                });
+        }
+
+        return its;
+      }
     }
 }
 </script>

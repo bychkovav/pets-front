@@ -13,6 +13,8 @@ import 'primevue/resources/themes/saga-blue/theme.css'      //theme
 import 'primevue/resources/primevue.min.css'                 //core css
 import 'primeicons/primeicons.css'
 import 'primeflex/primeflex.css'
+import store from './store';
+
 
 const routes = [
     { path: '/', component: Home },
@@ -33,6 +35,7 @@ const routes = [
 const app = createApp(App)
 app.use(PrimeVue);
 app.use(router);
+app.use(store);
 app.component('Button', Button)
 app.component('Menubar', Menubar)
 
