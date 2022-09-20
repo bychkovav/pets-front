@@ -38,7 +38,15 @@ export default {
       }
       axios
       .post('http://127.0.0.1:8000/login', {email: this.login, password: this.password})
-      .then(response => (alert(response)))
+      .then(response => {
+        if(response.data) {
+          that.$store.commit('setUser', response.data.email);
+          that.$store.commit('setToken', response.data.token);
+        }
+        else {
+          that.errors.push('Something went wrong');
+        }
+      })
       .catch(function (error) {
         if(error.response.data){
           that.errors.push(error.response.data.detail);

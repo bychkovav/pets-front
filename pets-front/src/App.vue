@@ -38,14 +38,6 @@ export default {
 <template>
   <header>
     <Menubar :model="items">
-    <template #item="{item}">
-        <a :href="item.url" class="p-menuitem-link">
-          <span class="p-menuitem-text"> {{item.label}}</span>
-         </a>
-    </template>
-    <template #end>
-      
-    </template>
   </Menubar>
   </header>
 

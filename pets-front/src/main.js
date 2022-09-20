@@ -30,9 +30,12 @@ const routes = [
     // 4. Provide the history implementation to use. We are using the hash history for simplicity here.
     history: createWebHashHistory(),
     routes, // short for `routes: routes`
+    
   })
 
-const app = createApp(App)
+const app = createApp({
+  extends:App,
+  beforeCreate() { this.$store.commit('initialiseStore') }})
 app.use(PrimeVue);
 app.use(router);
 app.use(store);
