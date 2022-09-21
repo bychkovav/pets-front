@@ -2,7 +2,7 @@
 <script>
 import Fieldset from 'primevue/fieldset';
 import InputText from 'primevue/inputtext';
-import Password from 'primevue/password';
+import Dropdown from 'primevue/inputtext';
 import Button from 'primevue/button';
 import axios from 'axios';
 import { email, required } from '@vuelidate/validators'
@@ -11,21 +11,27 @@ import { useVuelidate } from '@vuelidate/core'
 export default {
   data() {
     return {
-        login: '',
-        password: '',
-      errors: []
+        name: '',
+        type: null,
+        age: '',
+        gender: '',
+        errors: [],
+        types:[
+            {type:'dog', name:'Dog'}, 
+            {type:'cat', name:'Cat'}
+            ]
     }
   },
   validations: {
-        login: { required, email },
-        password: { required }
+        name: { required },
+        type: { required }
   },
   setup: () => ({ v$: useVuelidate() }),
   components: {
     Button,
     Fieldset,
     InputText,
-    Password
+    Dropdown
   },
   methods: {
     async onSubmit(e) {
@@ -60,7 +66,7 @@ export default {
 </script>
 
 <template>
-  <Fieldset legend="Login" class="lg:w-6 sm:w-full m-auto">
+  <Fieldset class="lg:w-6 sm:w-full m-auto">
     <p v-if="errors.length" class="text-red-500">
     <b>Please correct the following error(s):</b>
     <ul>
@@ -70,14 +76,14 @@ export default {
   </p>
     <form @submit="onSubmit">
       <div class=" field">
-        <label for="login" class="w-full">Login</label>
-        <InputText id="login" type="text" class="w-full" v-model="login" />
-        <div class="text-red-500" v-if="v$.login.$error">This field is email</div>
+        <label for="name" class="w-full">Name</label>
+        <InputText id="name" type="text" class="w-full" v-model="name" />
+        <div class="text-red-500" v-if="v$.name.$error">This field is email</div>
       </div>
       <div class="field">
-        <label for="password" class="w-full">Password</label>
-        <Password id="password" :style="{width: '100%'}" class="w-full" type="text" v-model="password" toggleMask />
-        <div class="text-red-500" v-if="v$.password.$error">This field is required</div>
+        <label for="type" class="w-full">Type</label>
+        <Dropdown v-model="type" :options="types" optionLabel="name" optionValue="type" placeholder="Select a Type" />
+        <div class="text-red-500" v-if="v$.type.$error">This field is required</div>
       </div>
       <div>
         <Button label="Submit" icon="pi pi-check" iconPos="right" type="submit" />
@@ -87,7 +93,5 @@ export default {
 </template>
 
 <style>
-.p-password .p-inputtext {
-  width: 100% !important;
-}
+
 </style>

@@ -20,11 +20,16 @@ export default {
           url:'#/register'});
         } else {
           its.push({
+					label:'Profile',
+          url:'#/profile',
+					icon:'pi pi-fw pi-user'
+                });
+
+          its.push({
 					label:'Quit',
 					icon:'pi pi-fw pi-power-off',
           command: (event) => {
                this.$store.commit('setUser', null);
-              this.$store.commit('setToken', null);
         }
                 });
         }

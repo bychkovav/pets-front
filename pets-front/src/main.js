@@ -3,7 +3,9 @@ import { createApp } from 'vue'
 import App from './App.vue'
 import Login from './components/Login.vue'
 import Register from './components/Register.vue'
+import Profile from './components/Profile.vue'
 import Home from './components/Home.vue'
+import Pet from './components/Pet.vue'
 import PrimeVue from 'primevue/config';
 import Button from 'primevue/button'
 import Menubar from 'primevue/menubar';
@@ -20,6 +22,8 @@ const routes = [
     { path: '/', component: Home },
     { path: '/login', component: Login },
     { path: '/register', component: Register },
+    { path: '/profile', component: Profile, name: "Profile" },
+    { path: '/pet', component: Pet, name: "Pet" },
 
   ]
   
@@ -31,6 +35,11 @@ const routes = [
     history: createWebHashHistory(),
     routes, // short for `routes: routes`
     
+  })
+
+  router.beforeEach((to, from, next) => {
+    if (to.name == 'Profile' && !store.getters.user) next({ name: 'Login' })
+    else next()
   })
 
 const app = createApp({

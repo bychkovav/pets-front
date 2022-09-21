@@ -42,8 +42,7 @@ export default {
       .post('http://127.0.0.1:8000/register', {email: this.login, password: this.password, confirm_password: this.confirm_password})
       .then(response => {
         if(response.data) {
-          that.$store.commit('setUser', response.data.email);
-          that.$store.commit('setToken', response.data.token);
+         that.$store.commit('setUser', {email: response.data.email, token: response.data.token, id: response.data.id});
         }
         else {
           that.errors.push('Something went wrong');

@@ -2,15 +2,15 @@ import { createStore } from 'vuex';
 
 const store = createStore({
   state: {
-    user: null,
+    email: null,
     token: null,
+    id: null
   },
   mutations: {
     setUser(state, user) {
-      state.user = user;
-    },
-    setToken(state, token) {
-      state.token = token;
+      state.email = user.email;
+      state.token = user.token;
+      state.id = user.id;
     },
     initialiseStore(state) {
 			// Check if the ID exists
