@@ -6,6 +6,8 @@ import Register from './components/Register.vue'
 import Profile from './components/Profile.vue'
 import Home from './components/Home.vue'
 import Pet from './components/Pet.vue'
+import Ava from './components/Ava.vue'
+import PetContainer from './components/PetContainer.vue'
 import PrimeVue from 'primevue/config';
 import Button from 'primevue/button'
 import Menubar from 'primevue/menubar';
@@ -23,7 +25,22 @@ const routes = [
     { path: '/login', component: Login },
     { path: '/register', component: Register },
     { path: '/profile', component: Profile, name: "Profile" },
+    { path: '/pet-new', component: PetContainer, name: "PetContainer",
+    children: [
+      {
+        // UserProfile will be rendered inside User's <router-view>
+        // when /user/:id/profile is matched
+        path: 'pet',
+        component: Pet,
+      },
+      {
+        // UserPosts will be rendered inside User's <router-view>
+        // when /user/:id/posts is matched
+        path: 'ava',
+        component: Ava,
+      }]},
     { path: '/pet', component: Pet, name: "Pet" },
+    { path: '/ava', component: Ava, name: "Ava" },
 
   ]
   
@@ -38,7 +55,7 @@ const routes = [
   })
 
   router.beforeEach((to, from, next) => {
-    if (to.name == 'Profile' && !store.getters.user) next({ name: 'Login' })
+    if ((to.name == 'Profile' || to.name == 'PetContainer') && !store.getters.user) next({ name: 'Login' })
     else next()
   })
 

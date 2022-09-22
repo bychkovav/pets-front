@@ -37,7 +37,7 @@ export default {
   },
   methods: {
 	goToProfile() {
-   			this.$router.push('pet'); 
+   			this.$router.push('pet-new/pet'); 
       }
   }
 }

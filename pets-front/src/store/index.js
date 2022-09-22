@@ -8,9 +8,9 @@ const store = createStore({
   },
   mutations: {
     setUser(state, user) {
-      state.email = user.email;
-      state.token = user.token;
-      state.id = user.id;
+      state.email = user? user.email: null;
+      state.token = user? user.token:null;
+      state.id = user?user.id:null;
     },
     initialiseStore(state) {
 			// Check if the ID exists
@@ -25,7 +25,7 @@ const store = createStore({
   actions: {},
   getters: {
     user(state) {
-      return state.token && state.user? { user: state.user, token: state} :null;
+      return state.token && state.user? { user: state.user, token: state.token} :null;
     }
   },
 });

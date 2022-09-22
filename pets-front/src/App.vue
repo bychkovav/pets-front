@@ -43,6 +43,9 @@ export default {
 <template>
   <header>
     <Menubar :model="items">
+      	<template #start>
+						<img alt="logo" src="./assets/pet.png" height="40" class="mr-2">
+					</template>
   </Menubar>
   </header>
 
