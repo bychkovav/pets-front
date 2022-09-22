@@ -23,7 +23,7 @@ export default {
       //event.files == files to upload
       var that = this;
       var formData = new FormData();
-      formData.append("file", event.files[0]);
+      formData.append("pic", event.files[0]);
       axios.post(`http://127.0.0.1:8000/pet/${this.id}/image`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
@@ -31,7 +31,7 @@ export default {
         },
       }).then(response => {
         if(response.data) {
-          that.$router.push({path: '/profile', params: { success: 'true' }});
+          //that.$router.push({name: 'Profile', params: { success: 'true' }});
         }
         else {
           that.errors.push('Something went wrong');
@@ -40,7 +40,7 @@ export default {
       .catch(function (error) {
         if(error.response.status == 401 || error.response.status == 403) {
             that.$store.commit('setUser', null);
-            that.$router.push({path: '/login', params: { error: 'not_allowed' }});
+            //that.$router.push({name: 'Login', params: { error: 'not_allowed' }});
         }
         else if(error.response.data){
           that.errors.push(error.response.data.detail);

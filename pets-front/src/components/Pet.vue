@@ -46,7 +46,7 @@ export default {
       .post('http://127.0.0.1:8000/pet', {name: this.name, type: this.type}, {headers: { Authorization: `Bearer ${that.$store.getters.user.token}` }})
       .then(response => {
         if(response.data) {
-          that.$router.push({path: 'ava', params: { id: response.data.id }});
+          that.$router.push({name: 'Ava', params: { id: response.data.id }});
         }
         else {
           that.errors.push('Something went wrong');
@@ -55,7 +55,7 @@ export default {
       .catch(function (error) {
         if(error.response.status == 401 || error.response.status == 403) {
             that.$store.commit('setUser', null);
-            that.$router.push({path: '/login', params: { error: 'not_allowed' }});
+            that.$router.push({name: 'Login', params: { error: 'not_allowed' }});
         }
         else if(error.response.data){
           that.errors.push(error.response.data.detail);

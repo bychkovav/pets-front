@@ -21,8 +21,8 @@ import store from './store';
 
 
 const routes = [
-    { path: '/', component: Home },
-    { path: '/login', component: Login },
+    { path: '/', component: Home, name: 'Home' },
+    { path: '/login', component: Login, name: 'Login', props: true },
     { path: '/register', component: Register },
     { path: '/profile', component: Profile, name: "Profile" },
     { path: '/pet-new', component: PetContainer, name: "PetContainer",
@@ -32,16 +32,17 @@ const routes = [
         // when /user/:id/profile is matched
         path: 'pet',
         component: Pet,
+        name: 'Pet',
+        props: true
       },
       {
         // UserPosts will be rendered inside User's <router-view>
         // when /user/:id/posts is matched
-        path: 'ava',
+        path: ':id/ava',
         component: Ava,
+        name:'Ava',
+        props: true
       }]},
-    { path: '/pet', component: Pet, name: "Pet" },
-    { path: '/ava', component: Ava, name: "Ava" },
-
   ]
   
   // 3. Create the router instance and pass the `routes` option

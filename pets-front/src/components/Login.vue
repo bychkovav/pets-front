@@ -16,6 +16,9 @@ export default {
       errors: []
     }
   },
+  props: {
+    error: String
+  },
   validations: {
         login: { required, email },
         password: { required }
