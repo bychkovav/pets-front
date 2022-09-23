@@ -5,29 +5,31 @@ import InputText from 'primevue/inputtext';
 import Password from 'primevue/password';
 import Button from 'primevue/button';
 import axios from 'axios';
-import { email, required, sameAs  } from '@vuelidate/validators'
+import { email, required, sameAs } from '@vuelidate/validators'
 import { useVuelidate } from '@vuelidate/core'
+import Errors from './Errors.vue'
 
 export default {
   data() {
     return {
-        login: '',
-        password: '',
-        confirm_password: '',
+      login: '',
+      password: '',
+      confirm_password: '',
       errors: []
     }
   },
   validations: {
-        login: { required, email },
-        password: { required },
-        confirm_password: { required}
+    login: { required, email },
+    password: { required },
+    confirm_password: { required }
   },
   setup: () => ({ v$: useVuelidate() }),
   components: {
     Button,
     Fieldset,
     InputText,
-    Password
+    Password,
+    Errors
   },
   methods: {
     async onSubmit(e) {
@@ -35,27 +37,27 @@ export default {
       const that = this;
       e.preventDefault();
       const isFormCorrect = await this.v$.$validate();
-      if(!isFormCorrect) {
+      if (!isFormCorrect) {
         return;
       }
       axios
-      .post('http://127.0.0.1:8000/register', {email: this.login, password: this.password, confirm_password: this.confirm_password})
-      .then(response => {
-        if(response.data) {
-         that.$store.commit('setUser', {email: response.data.email, token: response.data.token, id: response.data.id});
-        }
-        else {
-          that.errors.push('Something went wrong');
-        }
-      })
-      .catch(function (error) {
-        if(error.response.data){
-          that.errors.push(error.response.data.detail);
-        } 
-        else {
-          that.errors.push('Something went wrong');
-        }
-      });
+        .post('http://127.0.0.1:8000/register', { email: this.login, password: this.password, confirm_password: this.confirm_password })
+        .then(response => {
+          if (response.data) {
+            that.$store.commit('setUser', { email: response.data.email, token: response.data.token, id: response.data.id });
+          }
+          else {
+            that.errors.push('Something went wrong');
+          }
+        })
+        .catch(function (error) {
+          if (error.response.data) {
+            that.errors.push(error.response.data.detail);
+          }
+          else {
+            that.errors.push('Something went wrong');
+          }
+        });
     }
   }
 }
@@ -63,13 +65,7 @@ export default {
 
 <template>
   <Fieldset legend="Registration" class="lg:w-6 sm:w-full m-auto">
-    <p v-if="errors.length" class="text-red-500">
-    <b>Please correct the following error(s):</b>
-    <ul>
-      <li v-for="(error, index) in errors" :key="index">{{ error }}</li>
-      <!-- <li v-for="(error, index) in v$.$errors" :key="index">{{ error.$property }} : {{ error.$message }}</li> -->
-    </ul>
-  </p>
+    <Errors :errors="this.errors"></Errors>
     <form @submit="onSubmit">
       <div class=" field">
         <label for="login" class="w-full">Login</label>
@@ -78,13 +74,16 @@ export default {
       </div>
       <div class="field">
         <label for="password" class="w-full">Password</label>
-        <Password id="password" :style="{width: '100%'}" class="w-full" type="text" v-model="password" toggleMask :class="{ 'p-invalid': v$.password.$error}" />
+        <Password id="password" :style="{width: '100%'}" class="w-full" type="text" v-model="password" toggleMask
+          :class="{ 'p-invalid': v$.password.$error}" />
         <div class="text-red-500" v-if="v$.password.$error">This field is required</div>
       </div>
       <div class="field">
         <label for="confirm_password" class="w-full">Confirm password</label>
-        <Password id="confirm_password" :style="{width: '100%'}" class="w-full" type="text" v-model="confirm_password" toggleMask :class="{ 'p-invalid': v$.confirm_password.$error}" />
-        <div class="text-red-500" v-if="v$.confirm_password.$error">This field is required and should be the same as Password</div>
+        <Password id="confirm_password" :style="{width: '100%'}" class="w-full" type="text" v-model="confirm_password"
+          toggleMask :class="{ 'p-invalid': v$.confirm_password.$error}" />
+        <div class="text-red-500" v-if="v$.confirm_password.$error">This field is required and should be the same as
+          Password</div>
       </div>
       <div>
         <Button label="Submit" icon="pi pi-check" iconPos="right" type="submit" />

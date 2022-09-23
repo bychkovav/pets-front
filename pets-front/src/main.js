@@ -7,6 +7,7 @@ import Profile from './components/Profile.vue'
 import Home from './components/Home.vue'
 import Pet from './components/Pet.vue'
 import Ava from './components/Ava.vue'
+import PetEdit from './components/PetEdit.vue'
 import PetContainer from './components/PetContainer.vue'
 import PrimeVue from 'primevue/config';
 import Button from 'primevue/button'
@@ -25,6 +26,7 @@ const routes = [
     { path: '/login', component: Login, name: 'Login', props: true },
     { path: '/register', component: Register },
     { path: '/profile', component: Profile, name: "Profile" },
+    { path: '/pet-edit/:id', component: PetEdit, name: "PetEdit", props: true },
     { path: '/pet-new', component: PetContainer, name: "PetContainer",
     children: [
       {

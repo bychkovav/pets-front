@@ -20,6 +20,10 @@ export default {
     }),
   },
   mounted() {
+   this.loadPets();
+  },
+  methods: {
+  loadPets() {
     const that = this;
     axios
       .post("http://127.0.0.1:8000/pets", { user_id: that.current_user.id })
@@ -34,13 +38,15 @@ export default {
         that.errors.push("Something went wrong");
       });
   },
-  methods: {
+  editPet(id) {
+    this.$router.push({name:'PetEdit', params: {id: id}});
+  },
 	deletePet(id) {
 		const that = this;
 axios
       .delete(`http://127.0.0.1:8000/pet/${id}`, {headers: { Authorization: `Bearer ${that.$store.getters.user.token}` }})
       .then((response) => {
-        that.$$route.go();
+        that.loadPets();
       })
       .catch(function (error) {
         that.errors.push("Something went wrong");
@@ -89,7 +95,7 @@ axios
               ><span class="product-category">{{ slotProps.data.type }}</span>
             </div>
             <div class="product-list-action">
-              <Button label="Edit" icon="pi pi-pencil" iconPos="right" />
+              <Button label="Edit" icon="pi pi-pencil" iconPos="right" @click="editPet(slotProps.data.id)" />
               <Button
                 label="Delete"
                 icon="pi pi-trash"

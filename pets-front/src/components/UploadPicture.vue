@@ -2,7 +2,7 @@
 <script>
 import axios from "axios";
 import FileUpload from "primevue/fileupload";
-import Card from 'primevue/card';
+import Errors from './Errors.vue'
 
 export default {
   props: {
@@ -16,7 +16,7 @@ export default {
 
   components: {
     FileUpload,
-    Card
+    Errors
   },
   methods: {
     myUploader(event) {
@@ -31,7 +31,7 @@ export default {
         },
       }).then(response => {
         if (response.data) {
-          //that.$router.push({name: 'Profile', params: { success: 'true' }});
+          that.$emit('uploaded', response.data.link);
         }
         else {
           that.errors.push('Something went wrong');
@@ -40,7 +40,7 @@ export default {
         .catch(function (error) {
           if (error.response.status == 401 || error.response.status == 403) {
             that.$store.commit('setUser', null);
-            //that.$router.push({name: 'Login', params: { error: 'not_allowed' }});
+            that.$router.push({ name: 'Login', params: { error: 'not_allowed' } });
           }
           else if (error.response.data) {
             that.errors.push(error.response.data.detail);
@@ -55,13 +55,15 @@ export default {
 </script>
 
 <template>
-  <Card class="mt-5">
-    <template #title> Upload avatar of your pet </template>
-    <template #content>
+  <div>
+    <div class="grid w-full justify-content-center flex">
+      <Errors :errors="this.errors"></Errors>
+    </div>
+    <div class="col-12 justify-content-center flex">
       <FileUpload mode="basic" name="file" :customUpload="true" @uploader="myUploader" accept="image/*"
         :maxFileSize="1000000" @upload="onUpload" />
-    </template>
-  </Card>
+    </div>
+  </div>
 </template>
 
 <style>

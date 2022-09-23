@@ -25,7 +25,7 @@ const store = createStore({
   actions: {},
   getters: {
     user(state) {
-      return state.token && state.user? { user: state.user, token: state.token} :null;
+      return state.token && state.id? { email: state.email, token: state.token, id: state.id} :null;
     }
   },
 });
