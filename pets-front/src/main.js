@@ -58,6 +58,7 @@ const routes = [
   })
 
   router.beforeEach((to, from, next) => {
+    store.commit('clearErrors');
     if ((to.name == 'Profile' || to.name == 'PetContainer') && !store.getters.user) next({ name: 'Login' })
     else next()
   })

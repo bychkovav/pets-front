@@ -1,56 +1,33 @@
 <script>
 import DataView from "primevue/dataview";
-import axios from "axios";
-import { PrimeIcons } from "primevue/api";
-import { mapGetters } from "vuex";
+import ErrorsToast from './ErrorsToast.vue'
 
 export default {
   data() {
     return {
-      pets: [],
-      errors: [],
     };
   },
   components: {
     DataView,
+    ErrorsToast
   },
   computed: {
-    ...mapGetters({
-      current_user: "user",
-    }),
+    pets() {
+      return this.$store.state.usersPets;
+    },
   },
   mounted() {
    this.loadPets();
   },
   methods: {
   loadPets() {
-    const that = this;
-    axios
-      .post("http://127.0.0.1:8000/pets", { user_id: that.current_user.id })
-      .then((response) => {
-        if (response.data) {
-          this.pets = response.data;
-        } else {
-          that.errors.push("Something went wrong");
-        }
-      })
-      .catch(function (error) {
-        that.errors.push("Something went wrong");
-      });
+    this.$store.dispatch("getUsersPets");
   },
   editPet(id) {
     this.$router.push({name:'PetEdit', params: {id: id}});
   },
 	deletePet(id) {
-		const that = this;
-axios
-      .delete(`http://127.0.0.1:8000/pet/${id}`, {headers: { Authorization: `Bearer ${that.$store.getters.user.token}` }})
-      .then((response) => {
-        that.loadPets();
-      })
-      .catch(function (error) {
-        that.errors.push("Something went wrong");
-      });
+    this.$store.dispatch("deletePet", id);
 	},
     goToProfile() {
       this.$router.push("pet-new/pet");
@@ -61,6 +38,7 @@ axios
 
 <template>
   <div>
+    <ErrorsToast/>
     <DataView :value="pets" layout="list" class="lg:w-6 sm:w-full m-auto">
       <template #header>
         <div class="grid grid-nogutter">

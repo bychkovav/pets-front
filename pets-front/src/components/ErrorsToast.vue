@@ -1,9 +1,9 @@
 <script>
-import Message from 'primevue/message';
+import Toast from 'primevue/message';
 
 export default {
     components: {
-        Message,
+        Toast,
     },
     computed: {
         errors() {
@@ -14,6 +14,5 @@ export default {
 }
 </script>
 <template>
-    <Message v-for="msg of errors" severity="error" :key="msg">{{msg}}</Message>
-
+    <Toast v-for="msg of errors"  severity="error"  :key="msg" position="top-right" life="3000">{{msg}}</Toast>
 </template>
