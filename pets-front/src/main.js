@@ -19,6 +19,7 @@ import 'primevue/resources/primevue.min.css'                 //core css
 import 'primeicons/primeicons.css'
 import 'primeflex/primeflex.css'
 import store from './store';
+import ToastService from 'primevue/toastservice';
 
 
 const routes = [
@@ -69,6 +70,7 @@ const app = createApp({
 app.use(PrimeVue);
 app.use(router);
 app.use(store);
+app.use(ToastService);
 app.component('Button', Button)
 app.component('Menubar', Menubar)
 

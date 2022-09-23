@@ -8,7 +8,7 @@ const store = createStore({
     email: null,
     token: null,
     id: null,
-    errors:[],
+    errors: [],
     usersPets: []
   },
   mutations: {
@@ -41,8 +41,8 @@ const store = createStore({
       context.commit("clearErrors");
       try {
         const response = await axios
-        .post(`${baseUrl}pets`, { user_id: context.state.id }, { headers: { Authorization: `Bearer ${context.state.token}` }});
-        if(response.data) {
+          .post(`${baseUrl}pets`, { user_id: context.state.id }, { headers: { Authorization: `Bearer ${context.state.token}` } });
+        if (response.data) {
           context.commit("setUserPets", response.data);
         }
         else {
@@ -57,9 +57,25 @@ const store = createStore({
       context.commit("clearErrors");
       try {
         await axios
-      .delete(`${baseUrl}pet/${id}`, {headers: { Authorization: `Bearer ${context.state.token}` }});
+          .delete(`${baseUrl}pet/${id}`, { headers: { Authorization: `Bearer ${context.state.token}` } });
         context.dispatch('getUsersPets');
       } catch (error) {
+        context.commit("setError", ["Something went wrong"]);
+      }
+    },
+    async login(context, data) {
+      context.commit("clearErrors");
+      try {
+        const response = await axios
+          .post(`${baseUrl}login`, data);
+        if(response.data) {
+          context.commit('setUser', { email: response.data.email, token: response.data.token, id: response.data.id });
+        }
+        else {
+          context.commit("setError", ["Something went wrong"]);
+        }
+      }
+      catch (error) {
         context.commit("setError", ["Something went wrong"]);
       }
     }

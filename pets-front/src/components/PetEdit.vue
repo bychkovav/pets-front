@@ -2,6 +2,7 @@
 <script>
 import Fieldset from 'primevue/fieldset';
 import InputText from 'primevue/inputtext';
+import InputNumber from 'primevue/inputnumber';
 import Dropdown from 'primevue/dropdown';
 import Button from 'primevue/button';
 import axios from 'axios';
@@ -48,7 +49,8 @@ export default {
     Errors,
     Avatar,
     Divider,
-    UploadPicture
+    UploadPicture,
+    InputNumber
   },
   mounted() {
     this.loadPet();
@@ -76,6 +78,7 @@ export default {
         });
     },
     async onSubmit(e) {
+      const toast = useToast();
       this.errors = []
       const that = this;
       e.preventDefault();
@@ -87,7 +90,7 @@ export default {
         .post('http://127.0.0.1:8000/pet', { name: this.pet.name, type: this.pet.type }, { headers: { Authorization: `Bearer ${that.$store.getters.user.token}` } })
         .then(response => {
           if (response.data) {
-            that.$router.push({ name: 'Ava', params: { id: response.data.id } });
+            //toast.add({severity:'success', summary: 'Success Message', detail:'Pet data was saved', life: 3000});
           }
           else {
             that.errors.push('Something went wrong');
@@ -140,8 +143,22 @@ export default {
               <Dropdown v-model="pet.type" :options="types" placeholder="Select a Type" class="w-full"
                 :class="{ 'p-invalid': v$.pet.type.$error}" />
               <div class="text-red-500" v-if="v$.pet.type.$error">This field is required</div>
+
             </div>
           </div>
+          <div class="grid m-auto justify-content-center">
+
+            <div class=" field col-4">
+              <label for="age" class="w-full">Age</label>
+              <InputNumber id="age" type="text" class="w-full" v-model="pet.age" />
+            </div>
+            <div class="field col-4">
+              <label for="gender" class="w-full">Gender</label>
+              <Dropdown v-model="pet.gender" :options="['Male', 'Female']" placeholder="Select a Gender"
+                class="w-full" />
+            </div>
+          </div>
+
           <div class="flex justify-content-center">
 
           </div>
