@@ -35,6 +35,17 @@ export default {
       });
   },
   methods: {
+	deletePet(id) {
+		const that = this;
+axios
+      .delete(`http://127.0.0.1:8000/pet/${id}`, {headers: { Authorization: `Bearer ${that.$store.getters.user.token}` }})
+      .then((response) => {
+        that.$$route.go();
+      })
+      .catch(function (error) {
+        that.errors.push("Something went wrong");
+      });
+	},
     goToProfile() {
       this.$router.push("pet-new/pet");
     },
@@ -84,6 +95,7 @@ export default {
                 icon="pi pi-trash"
                 iconPos="right"
                 class="p-button-danger"
+				@click="deletePet(slotProps.data.id)"
               />
             </div>
           </div>
