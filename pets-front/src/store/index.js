@@ -25,13 +25,17 @@ const store = createStore({
     authError: null,
     newPetId: null,
     petSaved: null,
-    petDeleted: null
+    petDeleted: null,
+    uploadedLnk: null
   },
   mutations: {
     setUser(state, user) {
       state.email = user ? user.email : null;
       state.token = user ? user.token : null;
       state.id = user ? user.id : null;
+    },
+    setUploadedLnk(state, val) {
+      state.uploadedLnk = val;
     },
     setPetDeleted(state, val) {
       state.petDeleted = val;
@@ -76,7 +80,7 @@ const store = createStore({
         });
 
         if (response.data) {
-          context.commit("setPetSaved", true);
+          context.commit("setUploadedLnk", response.data.link);
         } else {
           context.commit("setError", ["Something went wrong"]);
         }
@@ -98,6 +102,7 @@ const store = createStore({
           });
         if (response.data) {
           context.commit('setNewPetId', response.data.id);
+          context.commit('setPetSaved', true);
         } else {
           context.commit("setError", ["Something went wrong"]);
         }

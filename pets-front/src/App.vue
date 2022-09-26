@@ -14,6 +14,7 @@ export default {
   watch: {
     authError(v) {
       if (v) {
+        this.$store.commit("setUser", null);
         this.$store.commit("setError", ["You don't have access to do that"]);
         this.$router.push({ name: "Login" });
       }
