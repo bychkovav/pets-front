@@ -26,7 +26,7 @@ const routes = [
     { path: '/', component: Home, name: 'Home' },
     { path: '/login', component: Login, name: 'Login', props: true },
     { path: '/register', component: Register },
-    { path: '/profile', component: Profile, name: "Profile" },
+    { path: '/profile', component: Profile, name: "Profile", props: true },
     { path: '/pet-edit/:id', component: PetEdit, name: "PetEdit", props: true },
     { path: '/pet-new', component: PetContainer, name: "PetContainer",
     children: [
@@ -59,7 +59,9 @@ const routes = [
   })
 
   router.beforeEach((to, from, next) => {
+    // messages clear
     store.commit('clearErrors');
+    store.commit('setPetDeleted', null);
     if ((to.name == 'Profile' || to.name == 'PetContainer') && !store.getters.user) next({ name: 'Login' })
     else next()
   })

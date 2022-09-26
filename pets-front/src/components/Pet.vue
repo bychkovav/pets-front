@@ -26,6 +26,20 @@ export default {
     name: { required },
     type: { required }
   },
+  computed: {
+    newPetId() {
+      return this.$store.state.newPetId;
+    }
+  },
+  watch: {
+    newPetId(v) {
+      if(v) {
+        const id = this.newPetId;
+        this.$router.push({ name: 'Ava', params: { id } });
+        this.$store.commit('setNewPetId', null)
+      }
+    }
+  },
   setup: () => ({ v$: useVuelidate() }),
   components: {
     Button,
@@ -44,28 +58,8 @@ export default {
       if (!isFormCorrect) {
         return;
       }
-      axios
-        .post('http://127.0.0.1:8000/pet', { name: this.name, type: this.type }, { headers: { Authorization: `Bearer ${that.$store.getters.user.token}` } })
-        .then(response => {
-          if (response.data) {
-            that.$router.push({ name: 'Ava', params: { id: response.data.id } });
-          }
-          else {
-            that.errors.push('Something went wrong');
-          }
-        })
-        .catch(function (error) {
-          if (error.response.status == 401 || error.response.status == 403) {
-            that.$store.commit('setUser', null);
-            that.$router.push({ name: 'Login', params: { error: 'not_allowed' } });
-          }
-          else if (error.response.data) {
-            that.errors.push(error.response.data.detail);
-          }
-          else {
-            that.errors.push('Something went wrong');
-          }
-        });
+
+      this.$store.dispatch('savePet' , {name: this.name, type: this.type });
     },
   }
 }

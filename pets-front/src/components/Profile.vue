@@ -1,34 +1,45 @@
 <script>
 import DataView from "primevue/dataview";
-import ErrorsToast from './ErrorsToast.vue'
-
+import ErrorsToast from "./ErrorsToast.vue";
+import Toast from "primevue/message";
 export default {
   data() {
-    return {
-    };
+    return {};
   },
   components: {
     DataView,
-    ErrorsToast
+    ErrorsToast,
+    Toast,
   },
   computed: {
     pets() {
       return this.$store.state.usersPets;
     },
+    message() {
+      return this.$route.query["message"] || this.deletedMessage;
+    },
+    petDeleted() {
+      return this.$store.state.petDeleted;
+    },
+    deletedMessage() {
+      if(this.petDeleted) {
+        return 'Pet record has been removed.'
+      }
+    }
   },
   mounted() {
-   this.loadPets();
+    this.loadPets();
   },
   methods: {
-  loadPets() {
-    this.$store.dispatch("getUsersPets");
-  },
-  editPet(id) {
-    this.$router.push({name:'PetEdit', params: {id: id}});
-  },
-	deletePet(id) {
-    this.$store.dispatch("deletePet", id);
-	},
+    loadPets() {
+      this.$store.dispatch("getUsersPets");
+    },
+    editPet(id) {
+      this.$router.push({ name: "PetEdit", params: { id: id } });
+    },
+    deletePet(id) {
+      this.$store.dispatch("deletePet", id);
+    },
     goToProfile() {
       this.$router.push("pet-new/pet");
     },
@@ -38,7 +49,15 @@ export default {
 
 <template>
   <div>
-    <ErrorsToast/>
+    <Toast
+      v-if="message"
+      severity="success"
+      :key="message"
+      position="top-right"
+      life="3000"
+      >{{ message }}</Toast
+    >
+    <ErrorsToast />
     <DataView :value="pets" layout="list" class="lg:w-6 sm:w-full m-auto">
       <template #header>
         <div class="grid grid-nogutter">
@@ -73,13 +92,18 @@ export default {
               ><span class="product-category">{{ slotProps.data.type }}</span>
             </div>
             <div class="product-list-action">
-              <Button label="Edit" icon="pi pi-pencil" iconPos="right" @click="editPet(slotProps.data.id)" />
+              <Button
+                label="Edit"
+                icon="pi pi-pencil"
+                iconPos="right"
+                @click="editPet(slotProps.data.id)"
+              />
               <Button
                 label="Delete"
                 icon="pi pi-trash"
                 iconPos="right"
                 class="p-button-danger"
-				@click="deletePet(slotProps.data.id)"
+                @click="deletePet(slotProps.data.id)"
               />
             </div>
           </div>

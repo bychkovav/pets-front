@@ -11,11 +11,11 @@ export default {
     return {
         steps: [{
                 label: 'Description',
-                to: '/pet'
+                to: '/pet-new/pet'
             },
             {
                 label: 'Ava',
-                to: '/ava'
+                to: '/pet-new/:id/ava'
             }],
             formObject: {}
     }

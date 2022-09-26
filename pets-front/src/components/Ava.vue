@@ -2,21 +2,31 @@
 <script>
 import axios from "axios";
 import FileUpload from "primevue/fileupload";
-import Card from 'primevue/card';
+import Card from "primevue/card";
 
 export default {
   props: {
-    id: Number
+    id: Number,
   },
   data() {
     return {
       errors: [],
     };
   },
-
+  computed: {
+    petSaved() {
+      return this.$store.state.petSaved;
+    },
+  },
+  watch: {
+    petSaved(v) {
+      this.$router.push({name: 'Profile', query: {message: 'Your pet has been successfully saved'}});
+    },
+  },
+  mounted() {},
   components: {
     FileUpload,
-    Card
+    Card,
   },
   methods: {
     myUploader(event) {
@@ -24,31 +34,7 @@ export default {
       var that = this;
       var formData = new FormData();
       formData.append("pic", event.files[0]);
-      axios.post(`http://127.0.0.1:8000/pet/${this.id}/image`, formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-          Authorization: `Bearer ${that.$store.getters.user.token}`
-        },
-      }).then(response => {
-        if (response.data) {
-          //that.$router.push({name: 'Profile', params: { success: 'true' }});
-        }
-        else {
-          that.errors.push('Something went wrong');
-        }
-      })
-        .catch(function (error) {
-          if (error.response.status == 401 || error.response.status == 403) {
-            that.$store.commit('setUser', null);
-            //that.$router.push({name: 'Login', params: { error: 'not_allowed' }});
-          }
-          else if (error.response.data) {
-            that.errors.push(error.response.data.detail);
-          }
-          else {
-            that.errors.push('Something went wrong');
-          }
-        });
+      this.$store.dispatch("uploadAvatar", { formData, id: this.id });
     },
   },
 };
@@ -58,12 +44,18 @@ export default {
   <Card class="mt-5">
     <template #title> Upload avatar of your pet </template>
     <template #content>
-      <FileUpload mode="basic" name="file" :customUpload="true" @uploader="myUploader" accept="image/*"
-        :maxFileSize="1000000" @upload="onUpload" />
+      <FileUpload
+        mode="basic"
+        name="file"
+        :customUpload="true"
+        @uploader="myUploader"
+        accept="image/*"
+        :maxFileSize="1000000"
+        @upload="onUpload"
+      />
     </template>
   </Card>
 </template>
 
 <style>
-
 </style>
