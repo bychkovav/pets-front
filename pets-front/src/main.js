@@ -61,8 +61,11 @@ const routes = [
   router.beforeEach((to, from, next) => {
     // messages clear
     store.commit('clearErrors');
-    store.commit('setPetDeleted', null);
     store.commit('setAuthError', null);
+    if(to.name != 'Profile' && to.name != 'Ava') {
+      store.commit('setPetDeleted', null);
+      store.commit('setPetSaved', null);
+    }
     if ((to.name == 'Profile' || to.name == 'PetContainer') && !store.getters.user) next({ name: 'Login' })
     else next()
   })

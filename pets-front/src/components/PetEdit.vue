@@ -40,6 +40,9 @@ export default {
         });
       }
     },
+    storedPet(v) {
+      this.pet = v.pet;
+    }
   },
   computed: {
     ...mapGetters({
@@ -48,6 +51,13 @@ export default {
     petSaved() {
       return this.$store.state.petSaved;
     },
+    storedPet() {
+      const p = this.$store.state.pet;
+       if (p && p.pet.owner_id != this.current_user.id) {
+              this.$router.push({ name: "Profile" });
+      }
+      return p;
+    }
   },
   setup: () => ({ v$: useVuelidate() }),
   components: {
@@ -71,22 +81,7 @@ export default {
       this.pet.pic = link;
     },
     loadPet() {
-      const that = this;
-      axios
-        .get(`http://127.0.0.1:8000/pet/${this.id}`)
-        .then((response) => {
-          if (response.data) {
-            this.pet = response.data.pet;
-            if (this.pet.owner_id != that.current_user.id) {
-              that.$router.push({ name: "Profile" });
-            }
-          } else {
-            that.errors.push("Something went wrong");
-          }
-        })
-        .catch(function (error) {
-          that.errors.push("Something went wrong");
-        });
+      this.$store.dispatch('getPet' , this.id);
     },
     async onSubmit(e) {
       const that = this;
@@ -98,6 +93,9 @@ export default {
       this.$store.dispatch("savePet", {
         name: this.pet.name,
         type: this.pet.type,
+        age: this.pet.age,
+        gender: this.pet.gender,
+        id: this.id
       });
     },
   },

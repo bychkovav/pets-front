@@ -21,6 +21,7 @@ const store = createStore({
     id: null,
     errors: [],
     usersPets: [],
+    pet: null,
     pets: [],
     authError: null,
     newPetId: null,
@@ -36,6 +37,18 @@ const store = createStore({
     },
     setUploadedLnk(state, val) {
       state.uploadedLnk = val;
+    },
+    setPet(state, val) {
+      state.pet = val;
+    },
+    increaseLike(state, id) {
+      const p = state.pets.find(item => {
+        return item.id == id;
+      });
+      if (p) {
+        p.likes_count++;
+        p.liked_by_user = true;
+      }
     },
     setPetDeleted(state, val) {
       state.petDeleted = val;
@@ -94,7 +107,10 @@ const store = createStore({
         const response = await axios
           .post(`${baseUrl}pet`, {
             name: pet.name,
-            type: pet.type
+            type: pet.type,
+            age: pet.age,
+            gender: pet.gender,
+            id: pet.id
           }, {
             headers: {
               Authorization: `Bearer ${context.state.token}`
@@ -114,16 +130,29 @@ const store = createStore({
       context.commit("clearErrors");
       try {
         const response = await axios
-          .post(`${baseUrl}pets`, {});
-        if (response.data) {
-          context.commit("setPets", response.data, {
+          .post(`${baseUrl}pets`, {}, {
             headers: {
               Authorization: `Bearer ${context.state.token}`
             }
           });
+        if (response.data) {
+          context.commit("setPets", response.data);
         } else {
           context.commit("setError", ["Something went wrong"]);
         }
+      } catch (error) {
+        context.commit("setError", ["Something went wrong"]);
+      };
+    },
+    async like(context, id) {
+      context.commit("clearErrors");
+      try {
+        const response = await axios
+          .post(`${baseUrl}pet/${id}/like`, {}, {
+            headers: {
+              Authorization: `Bearer ${context.state.token}`
+            }
+          });
       } catch (error) {
         context.commit("setError", ["Something went wrong"]);
       };
@@ -141,6 +170,24 @@ const store = createStore({
           });
         if (response.data) {
           context.commit("setUserPets", response.data);
+        } else {
+          context.commit("setError", ["Something went wrong"]);
+        }
+      } catch (error) {
+        processError(context, error);
+      }
+    },
+    async getPet(context, id) {
+      context.commit("clearErrors");
+      try {
+        const response = await axios
+          .get(`${baseUrl}pet/${id}`, {
+            headers: {
+              Authorization: `Bearer ${context.state.token}`
+            }
+          });
+        if (response.data) {
+          context.commit("setPet", response.data);
         } else {
           context.commit("setError", ["Something went wrong"]);
         }

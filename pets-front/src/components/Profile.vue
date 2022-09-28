@@ -4,7 +4,8 @@ import ErrorsToast from "./ErrorsToast.vue";
 import Toast from "primevue/message";
 export default {
   data() {
-    return {};
+    return {
+    };
   },
   components: {
     DataView,
@@ -16,16 +17,19 @@ export default {
       return this.$store.state.usersPets;
     },
     message() {
-      return this.$route.query["message"] || this.deletedMessage;
+      if(this.petDeleted) {
+       return 'Pet record has been removed.';
+      }
+      else if(this.petSaved) {
+          return 'Your pet has been successfully saved';
+      }
     },
     petDeleted() {
       return this.$store.state.petDeleted;
     },
-    deletedMessage() {
-      if(this.petDeleted) {
-        return 'Pet record has been removed.'
-      }
-    }
+    petSaved() {
+      return this.$store.state.petSaved;
+    },
   },
   mounted() {
     this.loadPets();
@@ -38,6 +42,7 @@ export default {
       this.$router.push({ name: "PetEdit", params: { id: id } });
     },
     deletePet(id) {
+      this.$store.commit('setPetSaved', null);
       this.$store.dispatch("deletePet", id);
     },
     goToProfile() {

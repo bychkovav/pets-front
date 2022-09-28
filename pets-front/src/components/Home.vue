@@ -2,11 +2,11 @@
 import DataView from "primevue/dataview";
 import axios from "axios";
 import { PrimeIcons } from "primevue/api";
+import Errors from "./Errors.vue";
 
 export default {
   data() {
     return {
-      pets: [],
       errors: [],
     };
   },
@@ -14,18 +14,36 @@ export default {
     pets() {
       return this.$store.state.pets;
     },
+    user() {
+      return this.$store.state.id;
+    }
   },
   components: {
     DataView,
+    Errors
   },
   mounted() {
     this.$store.dispatch("getPets", {});
   },
+  methods: {
+    likeClick(id) {
+      const p = this.pets.find(item => {
+         return item.id == id;
+      })
+      if(p && this.user && !p.liked_by_user) {
+        this.$store.dispatch('like' , id);
+        this.$store.commit('increaseLike', id);
+      }
+    }
+  }
 };
 </script>
 
 <template>
   <div>
+     <div class="grid w-full justify-content-center flex">
+      <Errors></Errors>
+    </div>
     <DataView :value="pets" layout="grid">
       <template #header> </template>
       <template #grid="slotProps">
@@ -48,9 +66,15 @@ export default {
               <div class="product-description">
                 {{ slotProps.data.owner_name }}
               </div>
+              <div v-if="slotProps.data.age" class="product-description">
+                {{ slotProps.data.age }} years
+              </div>
+              <div v-if="slotProps.data.gender" class="product-description">
+                {{ slotProps.data.gender }}
+              </div>
             </div>
             <div class="product-grid-item-bottom">
-              <span class="product-price"
+              <span class="product-price" @click="likeClick(slotProps.data.id)" :class="{liked: slotProps.data.liked_by_user}"
                 ><i class="pi pi-thumbs-up" style="font-size: 2rem"></i
               ></span>
               <span class="ml-2">{{ slotProps.data.likes_count }}</span>
@@ -66,8 +90,13 @@ export default {
 
 
 <style lang="scss" scoped>
+.liked {
+  color: var(--green-600);
+}
+
 .product-price:hover {
   cursor: pointer;
+  color: var(--green-600);
 }
 
 .card {

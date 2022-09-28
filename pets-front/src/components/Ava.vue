@@ -13,7 +13,7 @@ export default {
     return {};
   },
   mounted() {
-    this.$store.commit("setPetSaved", null);
+    //this.$store.commit("setPetSaved", null);
   },
   components: {
     FileUpload,
@@ -23,8 +23,7 @@ export default {
   methods: {
     uploaded(link) {
       this.$router.push({
-        name: "Profile",
-        query: { message: "Your pet has been successfully saved" },
+        name: "Profile"
       });
     },
   },
