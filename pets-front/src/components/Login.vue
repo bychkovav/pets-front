@@ -61,12 +61,12 @@ export default {
     <Errors></Errors>
     <form @submit="onSubmit">
       <div class=" field">
-        <label for="login" class="w-full">Login</label>
+        <label for="login" class="w-full">Login <span style="color: var(--red-600)">*</span></label>
         <InputText id="login" type="text" class="w-full" v-model="login" :class="{ 'p-invalid': v$.login.$error }"/>
         <div class="text-red-500" v-if="v$.login.$error">This field is email</div>
       </div>
       <div class="field">
-        <label for="password" class="w-full">Password</label>
+        <label for="password" class="w-full">Password <span style="color: var(--red-600)">*</span></label>
         <Password id="password" :style="{width: '100%'}" class="w-full" :class="{ 'p-invalid': v$.password.$error }" type="text" v-model="password" toggleMask />
         <div class="text-red-500" v-if="v$.password.$error">This field is required</div>
       </div>

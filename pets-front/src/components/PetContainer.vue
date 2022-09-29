@@ -30,9 +30,6 @@ export default {
         },
         prevPage(event) {
             this.$router.push(this.items[event.pageIndex - 1].to);
-        },
-        complete() {
-            this.$toast.add({severity:'success', summary:'Order submitted', detail: 'Dear, ' + this.formObject.firstname + ' ' + this.formObject.lastname + ' your order completed.'});
         }
     }
 }
@@ -40,8 +37,6 @@ export default {
 
 <template>
    <div class="lg:w-6 sm:w-full m-auto">
-        <Toast />
-        
         <div class="card">
             <Steps :model="steps" :readonly="true" />
 

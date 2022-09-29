@@ -109,7 +109,7 @@ export default {
         <template #header> </template>
         <template #title> Edit pet's profile </template>
         <template #content>
-          <Errors :errors="this.errors"></Errors>
+          <Errors></Errors>
           <div class="grid m-auto justify-content-center mb-5">
             <Avatar :image="pet.pic" size="xlarge" />
             <div class="w-full justify-content-center flex mt-2">
@@ -118,7 +118,7 @@ export default {
           </div>
           <div class="grid m-auto justify-content-center">
             <div class="field col-4">
-              <label for="name" class="w-full">Name</label>
+              <label for="name" class="w-full">Name <span style="color: var(--red-600)">*</span></label>
               <InputText
                 id="name"
                 type="text"
@@ -131,7 +131,7 @@ export default {
               </div>
             </div>
             <div class="field col-4">
-              <label for="type" class="w-full">Type</label>
+              <label for="type" class="w-full">Type <span style="color: var(--red-600)">*</span></label>
               <Dropdown
                 v-model="pet.type"
                 :options="types"

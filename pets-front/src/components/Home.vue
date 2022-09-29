@@ -3,11 +3,15 @@ import DataView from "primevue/dataview";
 import axios from "axios";
 import { PrimeIcons } from "primevue/api";
 import Errors from "./Errors.vue";
+import Button from "primevue/button";
+import Dropdown from "primevue/dropdown";
 
 export default {
   data() {
     return {
-      errors: [],
+      numPerPage: 10,
+      type: null,
+      types: ["dog", "cat"],
     };
   },
   computed: {
@@ -16,38 +20,62 @@ export default {
     },
     user() {
       return this.$store.state.id;
-    }
+    },
   },
   components: {
     DataView,
-    Errors
+    Errors,
+    Button,
+    Dropdown
   },
   mounted() {
-    this.$store.dispatch("getPets", {});
+    this.$store.dispatch("getPets", {num: this.numPerPage});
   },
   methods: {
+    onPage(event) {
+      this.$store.dispatch("getPets", { skip: event.first, num:this.numPerPage, type: this.type });
+    },
+    goToDetails(id) {
+      this.$router.push({ name: "Details", params: { id: id } });
+    },
     likeClick(id) {
-      const p = this.pets.find(item => {
-         return item.id == id;
-      })
-      if(p && this.user && !p.liked_by_user) {
-        this.$store.dispatch('like' , id);
-        this.$store.commit('increaseLike', id);
+      const p = this.pets.find((item) => {
+        return item.id == id;
+      });
+      if (p && this.user && !p.liked_by_user) {
+        this.$store.dispatch("like", id);
+        this.$store.commit("increaseLike", id);
       }
-    }
-  }
+    },
+  },
 };
 </script>
 
 <template>
   <div>
-     <div class="grid w-full justify-content-center flex">
+    <div class="grid w-full justify-content-center flex">
       <Errors></Errors>
     </div>
-    <DataView :value="pets" layout="grid">
-      <template #header> </template>
+    <DataView
+      :value="pets.list"
+      :totalRecords="pets.total"
+      layout="grid"
+      class="ml-3 mr-3"
+      :paginator="true"
+      :rows="numPerPage"
+      :lazy="true"
+      @page="onPage($event)"
+    >
+      <template #header>
+        
+          <div class="grid grid-nogutter">
+                    <div class="col-6" style="text-align: left">
+                        <Dropdown v-model="type" :options="types"  placeholder="Filter By type" @change="onPage({first:0})"/>
+                    </div>
+                </div>
+         </template>
       <template #grid="slotProps">
-        <div class="col-12 md:col-4 xl:col-3">
+        <div class="col-12 md:col-3 xl:col-2">
           <div class="product-grid-item card">
             <div class="product-grid-item-top">
               <div>
@@ -63,21 +91,30 @@ export default {
                 height="200"
               />
               <div class="product-name">{{ slotProps.data.name }}</div>
-              <div class="product-description">
-                {{ slotProps.data.owner_name }}
-              </div>
-              <div v-if="slotProps.data.age" class="product-description">
-                {{ slotProps.data.age }} years
-              </div>
-              <div v-if="slotProps.data.gender" class="product-description">
-                {{ slotProps.data.gender }}
-              </div>
             </div>
-            <div class="product-grid-item-bottom">
-              <span class="product-price" @click="likeClick(slotProps.data.id)" :class="{liked: slotProps.data.liked_by_user}"
-                ><i class="pi pi-thumbs-up" style="font-size: 2rem"></i
-              ></span>
-              <span class="ml-2">{{ slotProps.data.likes_count }}</span>
+            <div class="product-grid-item-bottom grid flex-row mt-3">
+              <div class="col">
+                <Button
+                  label="Details"
+                  class="
+                    p-button
+                    p-component
+                    p-button-raised
+                    p-button-info
+                    p-button-text
+                  "
+                  @click="goToDetails(slotProps.data.id)"
+                />
+              </div>
+              <div class="col flex align-content-end justify-content-end">
+                <span
+                  class="product-price"
+                  @click="likeClick(slotProps.data.id)"
+                  :class="{ liked: slotProps.data.liked_by_user }"
+                  ><i class="pi pi-thumbs-up" style="font-size: 2rem"></i
+                ></span>
+                <span class="ml-2">{{ slotProps.data.likes_count }}</span>
+              </div>
             </div>
           </div>
         </div>

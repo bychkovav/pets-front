@@ -1,10 +1,14 @@
 
   <script>
 import { mapGetters } from "vuex";
+import Toast from "primevue/toast";
 
 export default {
   data() {
     return {};
+  },
+  components: {
+    Toast,
   },
   methods: {
     homeClick() {
@@ -19,11 +23,26 @@ export default {
         this.$router.push({ name: "Login" });
       }
     },
+    errors(v) {
+      if (v && v.length) {
+        for (const m of v) {
+          this.$toast.add({
+            severity: "error",
+            summary: "Error",
+            detail: m,
+            life: 3000,
+          });
+        }
+      }
+    },
   },
   computed: {
     ...mapGetters({
       current_user: "user",
     }),
+    errors() {
+      return this.$store.state.errors;
+    },
     authError() {
       return this.$store.state.authError;
     },
@@ -70,7 +89,8 @@ export default {
   </header>
 
   <main class="mt-5">
-    <router-view></router-view>
+    <Toast />
+    <router-view> </router-view>
   </main>
 </template>
 

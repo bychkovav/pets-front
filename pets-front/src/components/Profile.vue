@@ -1,6 +1,5 @@
 <script>
 import DataView from "primevue/dataview";
-import ErrorsToast from "./ErrorsToast.vue";
 import Toast from "primevue/message";
 export default {
   data() {
@@ -9,20 +8,11 @@ export default {
   },
   components: {
     DataView,
-    ErrorsToast,
     Toast,
   },
   computed: {
     pets() {
-      return this.$store.state.usersPets;
-    },
-    message() {
-      if(this.petDeleted) {
-       return 'Pet record has been removed.';
-      }
-      else if(this.petSaved) {
-          return 'Your pet has been successfully saved';
-      }
+      return this.$store.state.usersPets.list;
     },
     petDeleted() {
       return this.$store.state.petDeleted;
@@ -31,12 +21,33 @@ export default {
       return this.$store.state.petSaved;
     },
   },
+  watch: {
+    petDeleted(v) {
+      if(v){
+         this.$toast.add({
+          severity: "success",
+          summary: "Thank you!",
+          detail: 'Pet record has been removed.',
+          life: 3000,
+        });
+      }
+    }
+  },
   mounted() {
     this.loadPets();
+    if(this.petSaved) {
+      this.$toast.add({
+          severity: "success",
+          summary: "Thank you!",
+          detail: 'Your pet has been successfully saved',
+          life: 3000,
+        });
+      this.$store.commit('setPetSaved', null);
+    }
   },
   methods: {
     loadPets() {
-      this.$store.dispatch("getUsersPets");
+      this.$store.dispatch("getUsersPets", {num:1000});
     },
     editPet(id) {
       this.$router.push({ name: "PetEdit", params: { id: id } });
@@ -54,15 +65,6 @@ export default {
 
 <template>
   <div>
-    <Toast
-      v-if="message"
-      severity="success"
-      :key="message"
-      position="top-right"
-      life="3000"
-      >{{ message }}</Toast
-    >
-    <ErrorsToast />
     <DataView :value="pets" layout="list" class="lg:w-6 sm:w-full m-auto">
       <template #header>
         <div class="grid grid-nogutter">

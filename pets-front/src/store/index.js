@@ -27,13 +27,17 @@ const store = createStore({
     newPetId: null,
     petSaved: null,
     petDeleted: null,
-    uploadedLnk: null
+    uploadedLnk: null,
+    commentAdded: null,
   },
   mutations: {
     setUser(state, user) {
       state.email = user ? user.email : null;
       state.token = user ? user.token : null;
       state.id = user ? user.id : null;
+    },
+    setCommentAdded(state, val) {
+      state.commentAdded = val;
     },
     setUploadedLnk(state, val) {
       state.uploadedLnk = val;
@@ -126,11 +130,11 @@ const store = createStore({
         processError(context, error);
       }
     },
-    async getPets(context, paging) {
+    async getPets(context, filter) {
       context.commit("clearErrors");
       try {
         const response = await axios
-          .post(`${baseUrl}pets`, {}, {
+          .post(`${baseUrl}pets`, {skip:filter.skip, num: filter.num, type: filter.type}, {
             headers: {
               Authorization: `Bearer ${context.state.token}`
             }
@@ -141,7 +145,7 @@ const store = createStore({
           context.commit("setError", ["Something went wrong"]);
         }
       } catch (error) {
-        context.commit("setError", ["Something went wrong"]);
+        processError(context, error);
       };
     },
     async like(context, id) {
@@ -155,6 +159,27 @@ const store = createStore({
           });
       } catch (error) {
         context.commit("setError", ["Something went wrong"]);
+      };
+    },
+    async comment(context, data) {
+      context.commit("clearErrors");
+      try {
+        const response = await axios
+          .post(`${baseUrl}pet/${data.id}/comment`, {
+            message: data.comment
+          }, {
+            headers: {
+              Authorization: `Bearer ${context.state.token}`
+            }
+          });
+        const petData = context.state.pet;
+        petData.comments.push({
+          message: data.comment
+        });
+        context.commit('setPet', petData);
+        context.commit('setCommentAdded', true);
+      } catch (error) {
+        processError(context, error);
       };
     },
     async getUsersPets(context) {
