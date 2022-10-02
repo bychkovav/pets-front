@@ -39,7 +39,7 @@ export default {
       this.$router.push({ name: "Details", params: { id: id } });
     },
     likeClick(id) {
-      const p = this.pets.find((item) => {
+      const p = this.pets.list.find((item) => {
         return item.id == id;
       });
       if (p && this.user && !p.liked_by_user) {

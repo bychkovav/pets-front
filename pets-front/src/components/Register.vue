@@ -41,7 +41,7 @@ export default {
         return;
       }
       axios
-        .post('http://127.0.0.1:8000/register', { email: this.login, password: this.password, confirm_password: this.confirm_password })
+        .post('http://34.141.58.52:8000/register', { email: this.login, password: this.password, confirm_password: this.confirm_password })
         .then(response => {
           if (response.data) {
             that.$store.commit('setUser', { email: response.data.email, token: response.data.token, id: response.data.id });

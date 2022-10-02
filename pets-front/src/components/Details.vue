@@ -43,7 +43,7 @@ export default {
       return this.$store.state.commentAdded;
     },
   },
-  watch: {
+  watch:{ 
     commentAdded(v) {
       if (v) {
         this.$toast.add({
@@ -77,7 +77,7 @@ export default {
         <div class="p-card-body">
           <div class="p-card-title">Pet picture:</div>
 
-          <div
+          <div v-if="petData" 
             class="
               p-card-content
               align-content-center
@@ -94,7 +94,7 @@ export default {
       <Card>
         <template #title> Pet details </template>
         <template #content>
-          <ul class="list-none p-0 m-0">
+          <ul class="list-none p-0 m-0" v-if="petData">
             <li class="flex">
               <a
                 class="
@@ -190,7 +190,7 @@ export default {
         <div class="p-card-title">Comments:</div>
         <DataView
           :value="petData.comments"
-          v-if="petData.comments"
+          v-if="petData && petData.comments"
           layout="list"
           class="mt-5"
         >

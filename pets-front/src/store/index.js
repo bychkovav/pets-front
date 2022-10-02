@@ -3,9 +3,9 @@ import {
 } from 'vuex';
 import axios from "axios";
 
-const baseUrl = 'http://127.0.0.1:8000/';
+const baseUrl = 'http://34.141.58.52:8000/';
 
-function processError(context, error) {
+function processError(context, error){ 
   if (error.response && (error.response.status == 401 || error.response.status == 403)) {
     context.commit("setUser", null);
     context.commit('setAuthError', true);
@@ -46,7 +46,7 @@ const store = createStore({
       state.pet = val;
     },
     increaseLike(state, id) {
-      const p = state.pets.find(item => {
+      const p = state.pets.list.find(item => {
         return item.id == id;
       });
       if (p) {
@@ -89,7 +89,7 @@ const store = createStore({
   actions: {
     async uploadAvatar(context, data) {
       try {
-        const response = await axios.post(`http://127.0.0.1:8000/pet/${data.id}/image`, data.formData, {
+        const response = await axios.post(`http://34.141.58.52:8000/pet/${data.id}/image`, data.formData, {
           headers: {
             "Content-Type": "multipart/form-data",
             Authorization: `Bearer ${context.state.token}`
@@ -174,7 +174,8 @@ const store = createStore({
           });
         const petData = context.state.pet;
         petData.comments.push({
-          message: data.comment
+          message: data.comment,
+          user_name: context.state.email
         });
         context.commit('setPet', petData);
         context.commit('setCommentAdded', true);
