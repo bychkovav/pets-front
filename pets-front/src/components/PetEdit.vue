@@ -22,7 +22,7 @@ export default {
   data() {
     return {
       pet: {},
-      types: ["dog", "cat"],
+      types: ["dog", "cat", "reptile", "hamster", "parrot"],
     };
   },
   validations: {

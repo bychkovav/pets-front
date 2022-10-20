@@ -1,6 +1,9 @@
 <script>
 import DataView from "primevue/dataview";
 import Toast from "primevue/message";
+import ConfirmPopup from 'primevue/confirmpopup';
+import { mapGetters } from "vuex";
+
 export default {
   data() {
     return {
@@ -9,8 +12,12 @@ export default {
   components: {
     DataView,
     Toast,
+    ConfirmPopup
   },
   computed: {
+    ...mapGetters({
+      current_user: "user",
+    }),
     pets() {
       return this.$store.state.usersPets.list;
     },
@@ -53,18 +60,38 @@ export default {
       this.$router.push({ name: "PetEdit", params: { id: id } });
     },
     deletePet(id) {
-      this.$store.commit('setPetSaved', null);
-      this.$store.dispatch("deletePet", id);
+       this.$confirm.require({
+                target: event.currentTarget,
+                message: 'Are you sure you want to proceed?',
+                icon: 'pi pi-exclamation-triangle',
+                accept: () => {
+                     this.$store.commit('setPetSaved', null);
+                    this.$store.dispatch("deletePet", id);
+                }
+            });
+     
     },
     goToProfile() {
       this.$router.push("pet-new/pet");
     },
+    deleteProfile(event) {
+       this.$confirm.require({
+                target: event.currentTarget,
+                message: 'Are you sure you want to proceed?',
+                icon: 'pi pi-exclamation-triangle',
+                accept: () => {
+                    this.$toast.add({severity:'info', summary:'Confirmed', detail:'You have accepted', life: 3000});
+                    this.$store.dispatch("deleteUser", this.current_user.id);
+                }
+            });
+    }
   },
 };
 </script>
 
 <template>
   <div>
+    <ConfirmPopup></ConfirmPopup>
     <DataView :value="pets" layout="list" class="lg:w-6 sm:w-full m-auto">
       <template #header>
         <div class="grid grid-nogutter">
@@ -72,7 +99,14 @@ export default {
             <Button
               icon="pi pi-plus"
               class="p-button-rounded p-button-primary p-button-outlined"
-              @click="goToProfile()"
+              @click="goToProfile($event)"
+            />
+          </div>
+          <div class="col-6" style="text-align: right">
+            <Button
+              icon="pi pi-trash"
+              class="p-button-outlined"
+              @click="deleteProfile($event)"
             />
           </div>
         </div>

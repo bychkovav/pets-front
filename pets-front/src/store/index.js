@@ -4,6 +4,7 @@ import {
 import axios from "axios";
 
 const baseUrl = 'http://34.141.58.52:8000/';
+//const baseUrl = 'http://localhost:8000/';
 
 function processError(context, error){ 
   if (error.response && (error.response.status == 401 || error.response.status == 403)) {
@@ -89,7 +90,7 @@ const store = createStore({
   actions: {
     async uploadAvatar(context, data) {
       try {
-        const response = await axios.post(`http://34.141.58.52:8000/pet/${data.id}/image`, data.formData, {
+        const response = await axios.post(`${baseUrl}pet/${data.id}/image`, data.formData, {
           headers: {
             "Content-Type": "multipart/form-data",
             Authorization: `Bearer ${context.state.token}`
@@ -108,7 +109,18 @@ const store = createStore({
     async savePet(context, pet) {
       context.commit("clearErrors");
       try {
-        const response = await axios
+        const response = pet.id? await axios
+        .patch(`${baseUrl}pet`, {
+          name: pet.name,
+          type: pet.type,
+          age: pet.age,
+          gender: pet.gender,
+          id: pet.id
+        }, {
+          headers: {
+            Authorization: `Bearer ${context.state.token}`
+          }
+        }) : await axios
           .post(`${baseUrl}pet`, {
             name: pet.name,
             type: pet.type,
@@ -134,7 +146,7 @@ const store = createStore({
       context.commit("clearErrors");
       try {
         const response = await axios
-          .post(`${baseUrl}pets`, {skip:filter.skip, num: filter.num, type: filter.type}, {
+          .post(`${baseUrl}pets`, {skip:filter.skip, num: filter.num, type: filter.type, petName: filter.petName}, {
             headers: {
               Authorization: `Bearer ${context.state.token}`
             }
@@ -152,7 +164,7 @@ const store = createStore({
       context.commit("clearErrors");
       try {
         const response = await axios
-          .post(`${baseUrl}pet/${id}/like`, {}, {
+          .put(`${baseUrl}pet/${id}/like`, {}, {
             headers: {
               Authorization: `Bearer ${context.state.token}`
             }
@@ -161,11 +173,25 @@ const store = createStore({
         context.commit("setError", ["Something went wrong"]);
       };
     },
+    async deleteUser(context, id) {
+      context.commit("clearErrors");
+      try {
+        const response = await axios
+          .delete(`${baseUrl}users/${id}`, {
+            headers: {
+              Authorization: `Bearer ${context.state.token}`
+            }
+          });
+        context.commit('setAuthError', true);
+      } catch (error) {
+        context.commit("setError", ["Something went wrong"]);
+      };
+    },
     async comment(context, data) {
       context.commit("clearErrors");
       try {
         const response = await axios
-          .post(`${baseUrl}pet/${data.id}/comment`, {
+          .put(`${baseUrl}pet/${data.id}/comment`, {
             message: data.comment
           }, {
             headers: {
@@ -175,6 +201,7 @@ const store = createStore({
         const petData = context.state.pet;
         petData.comments.push({
           message: data.comment,
+          date: (new Date()).toUTCString(),
           user_name: context.state.email
         });
         context.commit('setPet', petData);
@@ -241,6 +268,24 @@ const store = createStore({
       try {
         const response = await axios
           .post(`${baseUrl}login`, data);
+        if (response.data) {
+          context.commit('setUser', {
+            email: response.data.email,
+            token: response.data.token,
+            id: response.data.id
+          });
+        } else {
+          context.commit("setError", ["Something went wrong"]);
+        }
+      } catch (error) {
+        processError(context, error);
+      }
+    },
+    async register(context, data) {
+      context.commit("clearErrors");
+      try {
+        const response = await axios
+          .post(`${baseUrl}register`, data);
         if (response.data) {
           context.commit('setUser', {
             email: response.data.email,

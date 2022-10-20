@@ -196,7 +196,7 @@ export default {
         >
           <template #list="slotProps">
             <div class="col-12">
-              <b>{{ slotProps.data.user_name }} commented:</b>
+              <b>{{ slotProps.data.user_name }} commented at {{ (new Date(slotProps.data.date)).toUTCString() }}:</b>
               <p v-html="slotProps.data.message" />
             </div>
           </template>

@@ -5,13 +5,15 @@ import { PrimeIcons } from "primevue/api";
 import Errors from "./Errors.vue";
 import Button from "primevue/button";
 import Dropdown from "primevue/dropdown";
+import InputText from "primevue/inputtext";
 
 export default {
   data() {
     return {
       numPerPage: 10,
       type: null,
-      types: ["dog", "cat"],
+      petName: null,
+      types: ["dog", "cat", "reptile", "hamster", "parrot"],
     };
   },
   computed: {
@@ -26,14 +28,15 @@ export default {
     DataView,
     Errors,
     Button,
-    Dropdown
+    Dropdown,
+    InputText
   },
   mounted() {
     this.$store.dispatch("getPets", {num: this.numPerPage});
   },
   methods: {
     onPage(event) {
-      this.$store.dispatch("getPets", { skip: event.first, num:this.numPerPage, type: this.type });
+      this.$store.dispatch("getPets", { skip: event.first, num:this.numPerPage, type: this.type, petName: this.petName });
     },
     goToDetails(id) {
       this.$router.push({ name: "Details", params: { id: id } });
@@ -69,10 +72,22 @@ export default {
       <template #header>
         
           <div class="grid grid-nogutter">
-                    <div class="col-6" style="text-align: left">
+                    <div class="mr-2" style="text-align: left; ">
                         <Dropdown v-model="type" :options="types"  placeholder="Filter By type" @change="onPage({first:0})"/>
                     </div>
+                       <div class="" style="text-align: left">
+                        <InputText
+                id="petName"
+                type="text"
+                placeholder="Filter by pet name"
+                class="w-full"
+                v-model="petName"
+                @change="onPage({first:0})"
+              />
+                       
+                    </div>
                 </div>
+ 
          </template>
       <template #grid="slotProps">
         <div class="col-12 md:col-3 xl:col-2">

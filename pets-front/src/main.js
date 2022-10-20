@@ -15,6 +15,7 @@ import PetContainer from './components/PetContainer.vue'
 import PrimeVue from 'primevue/config';
 import Button from 'primevue/button'
 import Menubar from 'primevue/menubar';
+import ConfirmationService from 'primevue/confirmationservice';
 import {
   createRouter,
   createWebHashHistory
@@ -118,6 +119,7 @@ const app = createApp({
 app.use(PrimeVue);
 app.use(router);
 app.use(store);
+app.use(ConfirmationService);
 app.use(ToastService);
 app.component('Button', Button)
 app.component('Menubar', Menubar)

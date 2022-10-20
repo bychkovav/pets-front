@@ -63,6 +63,7 @@ export default {
           icon: "pi pi-fw pi-power-off",
           command: (event) => {
             this.$store.commit("setUser", null);
+            this.$store.commit('setAuthError', true);
           },
         });
       }

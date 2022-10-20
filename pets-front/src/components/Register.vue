@@ -23,6 +23,18 @@ export default {
     password: { required },
     confirm_password: { required }
   },
+  computed: {
+    token() {
+      return this.$store.state.token;
+    },
+  },
+  watch: {
+    token(v) {
+      if (v) {
+        this.$router.push({name : 'Profile'});
+      }
+    }
+  },
   setup: () => ({ v$: useVuelidate() }),
   components: {
     Button,
@@ -40,24 +52,7 @@ export default {
       if (!isFormCorrect) {
         return;
       }
-      axios
-        .post('http://34.141.58.52:8000/register', { email: this.login, password: this.password, confirm_password: this.confirm_password })
-        .then(response => {
-          if (response.data) {
-            that.$store.commit('setUser', { email: response.data.email, token: response.data.token, id: response.data.id });
-          }
-          else {
-            that.errors.push('Something went wrong');
-          }
-        })
-        .catch(function (error) {
-          if (error.response.data) {
-            that.errors.push(error.response.data.detail);
-          }
-          else {
-            that.errors.push('Something went wrong');
-          }
-        });
+      this.$store.dispatch("register", {email: this.login, password: this.password, confirm_password: this.confirm_password });
     }
   }
 }

@@ -19,8 +19,7 @@ export default {
       age: null,
       gender: '',
       errors: [],
-      types: ["dog", "cat"
-      ]
+      types: ["dog", "cat", "reptile", "hamster", "parrot"]
     }
   },
   validations: {
