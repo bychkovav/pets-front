@@ -73,7 +73,7 @@ export default {
         
           <div class="grid grid-nogutter">
                     <div class="mr-2" style="text-align: left; ">
-                        <Dropdown v-model="type" :options="types"  placeholder="Filter By type" @change="onPage({first:0})"/>
+                        <Dropdown v-model="type" :options="types" inputId="typesSelector"  placeholder="Filter By type" @change="onPage({first:0})"/>
                     </div>
                        <div class="" style="text-align: left">
                         <InputText

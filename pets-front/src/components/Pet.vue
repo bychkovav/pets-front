@@ -89,7 +89,7 @@ export default {
           </div>
           <div class="field col-4">
             <label for="type" class="w-full">Type <span style="color: var(--red-600)">*</span></label>
-            <Dropdown v-model="type" :options="types" placeholder="Select a Type" class="w-full"
+            <Dropdown v-model="type" :options="types" placeholder="Select a Type" inputId="typeSelector"  class="w-full"
               :class="{ 'p-invalid': v$.type.$error}" />
             <div class="text-red-500" v-if="v$.type.$error">This field is required</div>
           </div>
@@ -107,6 +107,7 @@ export default {
             <div class="field col-4">
               <label for="gender" class="w-full">Gender</label>
               <Dropdown
+                inputId="genderSelector"
                 v-model="gender"
                 :options="['Male', 'Female']"
                 placeholder="Select a Gender"

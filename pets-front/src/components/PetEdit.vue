@@ -133,6 +133,7 @@ export default {
             <div class="field col-4">
               <label for="type" class="w-full">Type <span style="color: var(--red-600)">*</span></label>
               <Dropdown
+                inputId="typeSelector"
                 v-model="pet.type"
                 :options="types"
                 placeholder="Select a Type"
@@ -157,6 +158,7 @@ export default {
             <div class="field col-4">
               <label for="gender" class="w-full">Gender</label>
               <Dropdown
+                inputId="genderSelector"
                 v-model="pet.gender"
                 :options="['Male', 'Female']"
                 placeholder="Select a Gender"
